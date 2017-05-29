@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.blt.talk.common.constant.DBConstant;
 import com.blt.talk.common.model.BaseModel;
 import com.blt.talk.common.model.entity.UserEntity;
 import com.blt.talk.common.param.BuddyListUserSignInfoReq;
@@ -26,6 +27,7 @@ import com.blt.talk.service.jpa.util.SearchCriteria;
 import com.blt.talk.service.remote.BuddyListService;
 
 /**
+ * 通信录相关业务处理
  * 
  * @author 袁贵
  * @version 1.0
@@ -62,7 +64,7 @@ public class BuddyListServiceController implements BuddyListService {
     public BaseModel<List<UserEntity>> getAllUser(@RequestParam("userId") long userId,
             @RequestParam("updateTime") int lastUpdateTime) {
         SearchCriteria<IMUser> userSearchCriteria = new SearchCriteria<>();
-        userSearchCriteria.add(JpaRestrictions.eq("status", 0, false));
+        userSearchCriteria.add(JpaRestrictions.ne("status", DBConstant.USER_STATUS_LEAVE, false));
 
         List<IMUser> users = userRepository.findAll(userSearchCriteria);
 
@@ -102,7 +104,7 @@ public class BuddyListServiceController implements BuddyListService {
 
         SearchCriteria<IMUser> userSearchCriteria = new SearchCriteria<>();
         userSearchCriteria.add(JpaRestrictions.in("id", userIdListList, false));
-        userSearchCriteria.add(JpaRestrictions.eq("status", 0, false));
+        userSearchCriteria.add(JpaRestrictions.ne("status", DBConstant.USER_STATUS_LEAVE, false));
 
         List<IMUser> users = userRepository.findAll(userSearchCriteria);
 

@@ -1,13 +1,16 @@
 package com.blt.talk.common.code.proto.helper;
 
+import org.bouncycastle.util.encoders.Base64;
+
 import com.blt.talk.common.code.proto.IMBaseDefine;
 import com.blt.talk.common.code.proto.IMBaseDefine.GroupType;
-import com.blt.talk.common.code.proto.IMBaseDefine.MsgInfo;
 import com.blt.talk.common.model.MessageEntity;
+import com.blt.talk.common.model.entity.DepartmentEntity;
 import com.blt.talk.common.model.entity.GroupEntity;
 import com.blt.talk.common.model.entity.SessionEntity;
 import com.blt.talk.common.model.entity.UnreadEntity;
 import com.blt.talk.common.model.entity.UserEntity;
+import com.blt.talk.common.util.CommonUtils;
 import com.google.protobuf.ByteString;
 
 /**
@@ -53,6 +56,19 @@ public class JavaBean2ProtoBuf {
         return groupBuilder.build();
     }
     
+
+    public static IMBaseDefine.DepartInfo getDepartmentInfo(DepartmentEntity deptInfo){
+        
+        IMBaseDefine.DepartInfo.Builder groupBuilder = IMBaseDefine.DepartInfo.newBuilder();
+        groupBuilder.setDeptId(deptInfo.getId());
+        groupBuilder.setDeptName(deptInfo.getDepartName());
+        groupBuilder.setDeptStatus(IMBaseDefine.DepartmentStatusType.forNumber(deptInfo.getStatus()));
+        groupBuilder.setParentDeptId(deptInfo.getDepartId());
+        groupBuilder.setPriority(deptInfo.getPriority());
+        
+        return groupBuilder.build();
+    }
+    
     public static IMBaseDefine.GroupInfo getGroupInfo(GroupEntity groupInfo){
         
         IMBaseDefine.GroupInfo.Builder groupBuilder = IMBaseDefine.GroupInfo.newBuilder();
@@ -64,8 +80,8 @@ public class JavaBean2ProtoBuf {
         groupBuilder.setGroupCreatorId(groupInfo.getCreatorId());
         groupBuilder.setShieldStatus(groupInfo.getStatus());
         
-        if (groupInfo.getlistGroupMemberIds() != null) {
-            groupBuilder.getGroupMemberListList().addAll(groupInfo.getlistGroupMemberIds());
+        if (groupInfo.getUserList() != null) {
+            groupBuilder.addAllGroupMemberList(groupInfo.getUserList());
         }
 
         return groupBuilder.build();
@@ -75,6 +91,7 @@ public class JavaBean2ProtoBuf {
     public static IMBaseDefine.ContactSessionInfo getContactSessionInfo(SessionEntity sessionInfo){
         
         IMBaseDefine.ContactSessionInfo.Builder sessionInfoBuilder = IMBaseDefine.ContactSessionInfo.newBuilder();
+        sessionInfoBuilder.setLatestMsgFromUserId(sessionInfo.getTalkId());
         sessionInfoBuilder.setLatestMsgType(IMBaseDefine.MsgType.forNumber(sessionInfo.getLatestMsgType()));
         sessionInfoBuilder.setSessionType(IMBaseDefine.SessionType.forNumber(sessionInfo.getPeerType()));
         sessionInfoBuilder.setSessionId(sessionInfo.getPeerId());
@@ -107,8 +124,12 @@ public class JavaBean2ProtoBuf {
         messageBuilder.setFromSessionId(message.getFromId());
         messageBuilder.setMsgType(IMBaseDefine.MsgType.forNumber(message.getMsgType()));
         messageBuilder.setCreateTime(message.getCreated());
-        messageBuilder.setMsgData(ByteString.copyFromUtf8(message.getContent()));
         
+        if (CommonUtils.isAudio(message.getMsgType())) {
+            messageBuilder.setMsgData(ByteString.copyFrom(Base64.decode(message.getContent())));
+        } else {
+            messageBuilder.setMsgData(ByteString.copyFromUtf8(message.getContent()));
+        }
         return messageBuilder.build();
     }
 }

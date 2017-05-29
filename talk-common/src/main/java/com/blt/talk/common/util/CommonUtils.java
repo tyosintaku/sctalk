@@ -7,6 +7,9 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.blt.talk.common.code.proto.IMBaseDefine;
+import com.blt.talk.common.code.proto.IMBaseDefine.MsgType;
+
 /**
  * 工具类
  * 
@@ -115,6 +118,95 @@ public class CommonUtils {
     public static int currentTimeSeconds() {
         long time = System.currentTimeMillis();
         return (int) (time /1000);
+    }
+    
+    /**
+     * 判断是否是PC端
+     * @param clientType
+     * @return
+     * @since  1.0
+     */
+    public static boolean isPc(int clientType) {
+        if (IMBaseDefine.ClientType.CLIENT_TYPE_MAC_VALUE == clientType 
+                || IMBaseDefine.ClientType.CLIENT_TYPE_WINDOWS_VALUE == clientType) {
+            return true;
+        }
+        return false;
+    }
+    /**
+     * 判断是否是PC端
+     * @param clientType
+     * @return
+     * @since  1.0
+     */
+    public static boolean isPc(IMBaseDefine.ClientType clientType) {
+        if (IMBaseDefine.ClientType.CLIENT_TYPE_MAC == clientType 
+                || IMBaseDefine.ClientType.CLIENT_TYPE_WINDOWS == clientType) {
+            return true;
+        }
+        return false;
+    }
+    /**
+     * 判断是否是移动端
+     * @param clientType
+     * @return
+     * @since  1.0
+     */
+    public static boolean isMobile(int clientType) {
+        if (IMBaseDefine.ClientType.CLIENT_TYPE_ANDROID_VALUE == clientType 
+                || IMBaseDefine.ClientType.CLIENT_TYPE_IOS_VALUE == clientType) {
+            return true;
+        }
+        return false;
+    }
+    /**
+     * 判断是否是移动端
+     * @param clientType
+     * @return
+     * @since  1.0
+     */
+    public static boolean isMobile(IMBaseDefine.ClientType clientType) {
+        if (IMBaseDefine.ClientType.CLIENT_TYPE_ANDROID == clientType 
+                || IMBaseDefine.ClientType.CLIENT_TYPE_IOS == clientType) {
+            return true;
+        }
+        return false;
+    }
+    /**
+     * @param msgType
+     * @return
+     * @since  1.0
+     */
+    public static boolean isMessageTypeSinble(MsgType msgType) {
+        if (IMBaseDefine.MsgType.MSG_TYPE_SINGLE_AUDIO == msgType
+                || IMBaseDefine.MsgType.MSG_TYPE_SINGLE_TEXT == msgType) {
+            return true;
+        }
+        return false;
+    }
+    /**
+     * @param messageType
+     * @return
+     * @since  1.0
+     */
+    public static boolean isGroup(MsgType messageType) {
+        return MsgType.MSG_TYPE_GROUP_TEXT == messageType || MsgType.MSG_TYPE_GROUP_AUDIO == messageType;
+    }
+    /**
+     * @param messageType
+     * @return
+     * @since  1.0
+     */
+    public static boolean isSingle(MsgType messageType) {
+        return MsgType.MSG_TYPE_SINGLE_TEXT == messageType || MsgType.MSG_TYPE_SINGLE_AUDIO == messageType;
+    }
+    /**
+     * @param msgType
+     * @return
+     * @since  1.0
+     */
+    public static boolean isAudio(int msgType) {
+        return MsgType.MSG_TYPE_SINGLE_AUDIO_VALUE == msgType || MsgType.MSG_TYPE_GROUP_AUDIO_VALUE == msgType;
     }
     
 }
